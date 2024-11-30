@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Code, Palette, Video, Globe, ArrowRight, Github, Linkedin, Mail, Download, ExternalLink, Moon, Sun } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Portfolio = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isDark, setIsDark] = useState(true);
   const [codeText, setCodeText] = useState('');
 
   const codeSnippet = `const Dhayanithi = {
@@ -23,9 +23,6 @@ new Project({
 
   useEffect(() => {
     setIsVisible(true);
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setIsDark(prefersDark);
-
     let currentIndex = 0;
     const timer = setInterval(() => {
       if (currentIndex <= codeSnippet.length) {
@@ -39,32 +36,19 @@ new Project({
     return () => clearInterval(timer);
   }, []);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
-
   const CodeWindow = () => (
-    <div className="w-full max-w-md">
-      <div className={`rounded-lg shadow-xl overflow-hidden ${
-        isDark ? 'bg-gray-900' : 'bg-gray-900'
-      }`}>
-        <div className={`flex items-center p-4 ${
-          isDark ? 'bg-gray-800' : 'bg-gray-800'
-        }`}>
+    <div className="w-full max-w-md transform hover:scale-105 transition-transform duration-300">
+      <div className="rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm border bg-gray-900/80 border-purple-500/30">
+        <div className="flex items-center p-4 bg-gray-800">
           <div className="flex space-x-2">
             <div className="w-3 h-3 bg-red-500 rounded-full"></div>
             <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
           </div>
-          <div className={`ml-4 text-sm ${
-            isDark ? 'text-gray-400' : 'text-gray-100'
-          }`}>Portfolio.js</div>
+          <div className="ml-4 text-sm text-gray-400">Portfolio.js</div>
         </div>
-        
         <div className="p-4 font-mono text-sm">
-          <pre className={`whitespace-pre-wrap ${
-            isDark ? 'text-gray-300' : 'text-gray-100'
-          }`}>
+          <pre className="whitespace-pre-wrap text-gray-300">
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -83,98 +67,87 @@ new Project({
     </div>
   );
 
+  const socialLinks = [
+    { icon: Github, href: "https://github.com/yourusername", label: "GitHub" },
+    { icon: Linkedin, href: "https://linkedin.com/in/yourusername", label: "LinkedIn" },
+    { icon: Mail, href: "mailto:your.email@example.com", label: "Email" }
+  ];
+
   return (
-    <div className={`min-h-screen font-montserrat transition-colors duration-300 ${
-      isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
-    }`}>
+    <div className="min-h-screen font-montserrat transition-all duration-300 bg-gradient-to-br from-black via-gray-900 to-purple-900">
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-6 flex justify-between items-center"
+        className="px-6 py-4 md:px-8 md:py-5 flex justify-between items-center fixed w-full z-50 bg-transparent"
       >
-        <div className="text-xl font-semibold">D K</div>
-        <nav className="flex items-center">
-          <button 
-            onClick={toggleTheme}
-            className={`p-2 rounded-full transition-colors ${
-              isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-            }`}
+        <Link 
+          to="/project" 
+          className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent hover:scale-110 transition-transform"
+        >
+          D K
+        </Link>
+
+        <div className="flex items-center gap-5">
+          <Link
+            to="/project"
+            className="text-purple-400 hover:text-purple-300 transition-colors font-medium"
           >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-        </nav>
+            Projects
+          </Link>
+          <a
+            href="/path/to/resume.pdf"
+            download
+            className="px-4 py-1.5 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-colors font-medium"
+          >
+            Resume
+          </a>
+        </div>
       </motion.header>
 
-      <main className="container mx-auto px-4 md:px-32">
+      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 pt-16 md:pt-20">
         <motion.section 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="py-12 flex flex-col md:flex-row items-center justify-between"
+          className="py-12 flex flex-col md:flex-row items-center justify-between gap-12"
         >
-          <div className="md:w-1/2 mb-8 md:mb-0">
+          <div className="md:w-1/2 space-y-6">
             <motion.h1 
               initial={{ x: -20 }}
               animate={{ x: 0 }}
-              className="text-5xl font-semibold mb-2 leading-tight"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2 leading-tight bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"
             >
               DHAYANITHI
             </motion.h1>
-            <h2 className={`text-2xl mb-4 font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            <h2 className="text-2xl mb-4 font-medium text-gray-400">
               Graphic Designer & Web Developer
             </h2>
-            <p className={`mb-8 leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className="mb-8 leading-relaxed text-gray-400">
               I'm an entry-level Graphic Designer & Web Developer with expertise in creating 
               visually engaging and user-centric digital experiences. Skilled in design software 
               such as Adobe Creative Suite and web technologies.
             </p>
 
-          <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className={`mt-2 p-4 rounded-lg inline-flex gap-10 transition-colors ${
-            isDark ? 'bg-gray-900' : 'bg-gray-200'
-          }`}
-        >
-          <div className="flex flex-col gap-2">
-  <div className="flex items-center gap-2">
-    <div className="text-purple-500 text-xl font-medium">About Me</div>
-    <motion.a
-      href="./about"
-      whileHover={{ scale: 1.1 }}
-      className="hover:text-purple-400 transition-colors font-medium"
-    >
-  <ExternalLink className="w-6 h-6" />
-  </motion.a>
-  </div>
-</div>
-<div className="flex flex-col gap-2">
-  <div className="flex items-center gap-2">
-    <div className="text-purple-500 text-xl font-medium">Projects</div>
-    <motion.a
-      href="/project"         // Update this path
-      whileHover={{ scale: 1.1 }}
-      className="hover:text-purple-400 transition-colors font-medium"
-    >
-      <ExternalLink className="w-6 h-6" />
-    </motion.a>
-  </div>
-</div>
-     <div className="flex flex-col gap-2">
-  <div className="flex items-center gap-2">
-    <div className="text-purple-500 text-xl font-medium">Resume</div>
-    <motion.a
-      href="/path/to/resume.pdf"  // Replace with your actual PDF file path
-      download="resume.pdf"       // Trigger download on click
-      whileHover={{ scale: 1.1 }}
-      className="hover:text-purple-400 transition-colors font-medium"
-    >
-      <Download className="w-6 h-6" />
-    </motion.a>
-  </div>
-          </div>
-        </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 flex gap-8"
+            >
+              {socialLinks.map((link) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.1 }}
+                  className="p-3 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-colors"
+                  aria-label={link.label}
+                >
+                  <link.icon className="w-6 h-6 text-purple-400" />
+                </motion.a>
+              ))}
+            </motion.div>
           </div>
           <motion.div 
             initial={{ scale: 0 }}
@@ -185,13 +158,11 @@ new Project({
             <CodeWindow />
           </motion.div>
         </motion.section>
- </main>
- <footer className={`fixed bottom-0 left-0 w-full py-4 text-center transition-colors ${
-    isDark ? 'bg-gray-900 text-gray-400' : 'bg-gray-100 text-gray-600'
-  }`}>
-  <p className="text-sm">© 2024 DHAYANITHI KARUNANITHI. All rights reserved.</p>
-</footer>
-      </div>
+      </main>
+      <footer className="fixed bottom-0 left-0 w-full py-4 text-center transition-all backdrop-blur-sm bg-gray-900/80 text-gray-400">
+        <p className="text-sm">© 2024 DK. All rights reserved.</p>
+      </footer>
+    </div>
   );
 };
 

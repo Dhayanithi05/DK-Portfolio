@@ -1,12 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Moon, Sun } from 'lucide-react';
+import { ExternalLink, Github, ArrowDown, ArrowUp } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Projects = () => {
-  const [isDark, setIsDark] = useState(true);
+  const [isAtBottom, setIsAtBottom] = useState(false);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      
+      // Check if we're near the bottom (within 100px)
+      setIsAtBottom(scrollTop + windowHeight >= documentHeight - 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    if (isAtBottom) {
+      // Scroll to top
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    } else {
+      // Scroll to bottom
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const projects = [
@@ -65,9 +92,7 @@ const Projects = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
-      className={`rounded-lg overflow-hidden shadow-lg transition-colors ${
-        isDark ? 'bg-gray-900' : 'bg-white'
-      }`}
+      className="rounded-lg overflow-hidden shadow-lg transition-colors bg-gray-900/80 backdrop-blur-sm border border-purple-500/30"
     >
       <img
         src={project.image}
@@ -75,15 +100,15 @@ const Projects = () => {
         className="w-full h-48 object-cover"
       />
       <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-        <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+        <h3 className="text-xl font-semibold mb-2 text-white">{project.title}</h3>
+        <p className="mb-4 text-gray-400">
           {project.description}
         </p>
         <div className="flex flex-wrap gap-2 mb-4">
           {project.tags.map((tag, index) => (
             <span
               key={index}
-              className="px-5 py-1 text-sm rounded-full bg-purple-500 text-white"
+              className="px-3 py-1 text-sm rounded-full bg-purple-500/20 text-purple-400"
             >
               {tag}
             </span>
@@ -95,18 +120,18 @@ const Projects = () => {
             href={project.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-500 hover:text-purple-400"
+            className="p-2 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-colors"
           >
-            <Github className="w-6 h-6" />
+            <Github className="w-5 h-5 text-purple-400" />
           </motion.a>
           <motion.a
             whileHover={{ scale: 1.1 }}
             href={project.live}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-500 hover:text-purple-400"
+            className="p-2 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-colors"
           >
-            <ExternalLink className="w-6 h-6" />
+            <ExternalLink className="w-5 h-5 text-purple-400" />
           </motion.a>
         </div>
       </div>
@@ -114,41 +139,41 @@ const Projects = () => {
   );
 
   return (
-    <div className={`min-h-screen font-montserrat transition-colors duration-300 ${
-      isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
-    }`}>
+    <div className="min-h-screen font-montserrat transition-all duration-300 bg-gradient-to-br from-black via-gray-900 to-purple-900">
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-6 flex justify-between items-center"
+        className="px-6 py-4 md:px-8 md:py-5 flex justify-between items-center fixed w-full z-50 bg-transparent"
       >
-        <motion.a
-          href="/"
-          whileHover={{ scale: 1.1 }}
-          className="text-xl font-semibold"
+        <RouterLink 
+          to="/" 
+          className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent hover:scale-110 transition-transform"
         >
           D K
-        </motion.a>
-        <nav className="flex items-center">
-          <button 
-            onClick={toggleTheme}
-            className={`p-2 rounded-full transition-colors ${
-              isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-            }`}
-          >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-        </nav>
+        </RouterLink>
+
+        <motion.button
+          onClick={handleScroll}
+          className="p-2 rounded-full bg-transparent hover:bg-purple-500/10 transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isAtBottom ? (
+            <ArrowUp className="w-5 h-5 text-purple-400" />
+          ) : (
+            <ArrowDown className="w-5 h-5 text-purple-400" />
+          )}
+        </motion.button>
       </motion.header>
 
-      <main className="container mx-auto px-4 md:px-32 py-12 mb-8">
+      <main className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-32 pt-24 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h1 className="text-4xl font-semibold mb-4">Projects</h1>
-          <p className={`max-w-2xl text-xl mx-auto ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          <h1 className="text-4xl md:text-4xl font-semibold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">Projects</h1>
+          <p className="max-w-2xl mx-auto text-xl text-gray-400">
             Here are some of my recent projects that showcase my skills in web development and design.
           </p>
         </motion.div>
@@ -163,10 +188,8 @@ const Projects = () => {
         </div>
       </main>
 
-      <footer className={`fixed bottom-0 left-0 w-full py-4 text-center transition-colors ${
-        isDark ? 'bg-gray-900 text-gray-400' : 'bg-gray-100 text-gray-600'
-      }`}>
-        <p className="text-sm">© 2024 DHAYANITHI KARUNANITHI. All rights reserved.</p>
+      <footer className="fixed bottom-0 left-0 w-full py-4 text-center transition-all backdrop-blur-sm bg-gray-900/80 text-gray-400">
+        <p className="text-sm">© 2024 DK. All rights reserved.</p>
       </footer>
     </div>
   );
